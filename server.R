@@ -17,11 +17,7 @@ shinyServer(
                                 abline(lm(price~carat, data = diamond), lwd = 2, col = "red")
                         }
                         
-#                         if (input$density) {
-#                                 dens <- density(faithful$eruptions,
-#                                                 adjust = input$bw_adjust)
-#                                 lines(dens, col = "blue")
-#                         }
+
                         
                 })
                 

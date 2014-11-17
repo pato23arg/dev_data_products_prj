@@ -15,7 +15,8 @@ shinyUI(bootstrapPage(
                       value = FALSE),
         
         
-        plotOutput(outputId = "main_plot", height = "500px", width = "500px")
+        plotOutput(outputId = "main_plot", height = "500px", width = "500px"),
         
+        p("Documentation:",a("Diamond Price Estimator",href="helpfile.html"))
 ))
 
