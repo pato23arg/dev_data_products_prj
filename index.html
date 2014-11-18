@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>Diamond Price Estimator Tool</title>
+	<meta name="description" content="Diamond Price Estimator Tool">
+	<meta name="author" content="Patricio Villar">
+	<meta name="generator" content="slidify" />
+	
+	<!-- LOAD STYLE SHEETS -->
+	<link rel="stylesheet" href="libraries/frameworks/html5slides/default/styles.css">
+	<link rel="stylesheet" href="libraries/highlighters/prettify/css/tomorrow.css" />    
+</head>
+<body style='display: none'>
+	<section class='slides layout-regular template-regular'>
+     <article class="" id="slide-1" style="background:;">
+  <h3>Diamond Price Estimator Tool</h3>
+  <p>Introduction and Use Cases</p>
+
+</article>
+
+<article class="class" id="id1" style="background:;">
+  <h3>Introduction</h3>
+  <p>This tool has been developed to easily estimate diamond&#39;s price based on its mass. The data used to create the predictor is publicly available at <a href="http://www.amstat.org/publications/jse/datasets/diamond.txt">http://www.amstat.org/publications/jse/datasets/diamond.txt</a>. This data set was created and contributed by Singfat Chu.</p>
+
+</article>
+
+<article class="class" id="id2" style="background:;">
+  <h3>The R Code: server.R</h3>
+  <pre><code class="r">library(shiny);library(UsingR);data(diamond)
+shinyServer(
+        function(input, output) {
+
+                output$main_plot &lt;- renderPlot({      
+                        plot(diamond$carat, diamond$price,
+                             xlab = &quot;Mass(carats)&quot;,
+                             ylab = &quot;Price (SIN $)&quot;,
+                             bg = &quot;lightblue&quot;,
+                             main = &quot;Diamond Price Regression Model&quot;,
+                             col = &quot;black&quot;, cex = 2, pch = 21, frame = FALSE)
+                        if (input$draw_trend) {
+                                abline(lm(price~carat, data = diamond), lwd = 2, col = &quot;red&quot;)
+                        }        
+                })     
+                output$calculated_price &lt;- renderText({
+                        if (input$calc_Button == 0)
+                                return()
+                        isolate(fit &lt;- lm(price~carat, data=diamond))
+                        isolate(coef(fit)[1] + coef(fit)[2] * as.numeric(input$calculate_price))                       
+                })
+        })
+</code></pre>
+
+</article>
+
+<article class="class" id="id3" style="background:;">
+  <h3>The R Code: ui.R</h3>
+  <pre><code class="r">library(shiny)
+shinyUI(bootstrapPage(
+        h3(&quot;Diamond Price Estimator Tool&quot;),       
+        textInput(inputId = &quot;calculate_price&quot;,
+                      label = strong(&quot;Calculate Diamond Price - Enter carats&quot;),
+                      value = 1),
+        actionButton(&quot;calc_Button&quot;, &quot;Calculate&quot;),
+        p(&#39;Diamond Estimated Price (SIN $):&#39;),
+        textOutput(&#39;calculated_price&#39;),
+
+        checkboxInput(inputId = &quot;draw_trend&quot;,
+                      label = strong(&quot;Draw Trend Line&quot;),
+                      value = FALSE),      
+        plotOutput(outputId = &quot;main_plot&quot;, height = &quot;500px&quot;, width = &quot;500px&quot;)       
+))
+</code></pre>
+
+</article>
+
+<article class="class" id="id4" style="background:;">
+  <h3>Let&#39;s Test it!</h3>
+  <p><img src="assets/fig/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3"> </p>
+
+<p>For more information, please use the documentation link in <a href="http://patricio-villar.shinyapps.io/course_project">http://patricio-villar.shinyapps.io/course_project</a></p>
+
+</article>
+
+  </section>
+</body>
+  <!-- LOAD JAVASCRIPTS  -->
+	<script src='libraries/frameworks/html5slides/default/slides.js'></script>
+	<!-- Google Prettify -->
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+	<script src='libraries/highlighters/prettify/js/lang-r.js'></script>
+	<script>
+	  var pres = document.getElementsByTagName("pre");
+	  for (var i=0; i < pres.length; ++i) {
+	    pres[i].className = "prettyprint linenums";
+	  }
+	  prettyPrint();
+	</script>
+	<!-- End Google Prettify --> 
+	</html>
